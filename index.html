@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CEC Applications - GIS Tool</title>
+  <link rel="icon" href="assets/favicon.ico" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css" />
+  <link rel="stylesheet" href="style/style.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/proj4@2.8.0"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
+
+</head>
+<body>
+  <div id="container">
+    <div id="data">
+<!------------------------------------------------------------>	
+	<div id="logo-title">
+      <img src="assets/logo.png" alt="CEC Logo" id="cecLogo" />
+	  <h2><strong>CEC Applications - GIS Tool</strong></h2>
+	</div>
+<!------------------------------------------------------------>	
+	<div id="welcome-container">
+        <div id="welcome">
+          <p>This tool integrates CEC Applications and other EMA housed data to offer a basic solution for analysis. It is designed to facilitate some general analysis which may assist with better informed decision-making.</p>
+          <p>
+			<div id= "docuLinks">
+			<a href="https://drive.google.com/file/d/1VKfjK3KEq_U3nK0OnuZLw-4t0aIkrvcm/view?usp=drive_link" target="_blank" rel="noopener noreferrer">Documentation</a><br>
+            <a href="https://docs.google.com/spreadsheets/d/1vUnovvw4xDDZq-IH82ZxwCrZp7U1P-Vfbbof-a_JTYI/edit?gid=0#gid=0" target="_blank" rel="noopener noreferrer">CEC Applications Data</a>
+          <!--  <a href="mailto:CEC@ema.co.tt">CEC@ema.co.tt</a>  -->
+		  </div>
+          </p>
+        </div>
+        <button id="toggleBtn">Close Info Panel</button>
+		<hr class="section-divider" />
+    </div>
+<!------------------------------------------------------------>	
+	<div id="dataViewToggle" class="disabled">
+		<button onclick="switchDataView('cluster')">Cluster View</button>
+		<button onclick="switchDataView('heatmap')">Heatmap View</button>
+		<button onclick="switchDataView('none')">Hide Points</button>
+    </div>
+    <hr class="section-divider" />
+<!------------------------------------------------------------>
+<div id="filterWrapper">
+<button id="toggleFilterBtn">Hide Filters</button>
+
+<div id="filterContainer" class="disabled">
+  <h3>Filter Applications</h3>
+
+  <!-- Start Date -->
+  <label for="startDate">Start Date:</label>
+  <input type="date" id="startDate" min="2001-01-01" max="2099-12-31">
+
+  <!-- End Date -->
+  <label for="endDate">End Date:</label>
+  <input type="date" id="endDate" min="2001-01-01" max="2099-12-31">
+
+  <!-- Status -->
+  <label for="statusSelect">Status:</label>
+  <select id="statusSelect"></select>
+
+  <!-- Designated Activity -->
+  <label for="activitySelect">Designated Activity:</label>
+  <select id="activitySelect"></select>
+
+  <!-- Keyword -->
+  <label for="keywordInput">Keyword Search:</label>
+  <input type="text" id="keywordInput" placeholder="Search...">
+
+  <!-- Buttons -->
+  <div class="filter-buttons">
+    <button id="applyFiltersBtn">Apply Filters</button>
+    <button id="clearFiltersBtn">Clear Filters</button>
+  </div>
+
+  <!-- Stats -->
+  <div id="filterStats">Showing all applications</div>
+</div>
+</div>
+
+<!------------------------------------------------------------>
+	<div id="utmSearchContainer">
+	  <h3>Search by UTM Coordinates</h3>
+	  <label for="utmEasting">Easting (X):</label>
+	  <input type="number" id="utmEasting" placeholder="Enter Easting (e.g. 666000)" />
+
+	  <label for="utmNorthing">Northing (Y):</label>
+	  <input type="number" id="utmNorthing" placeholder="Enter Northing (e.g. 1189000)" />
+
+	  <div class="utm-buttons">
+		<button id="utmSearchBtn">Search</button>
+		<button id="utmClearBtn">Clear</button>
+	  </div>
+	</div>
+	
+<!------------------------------------------------------------>	
+	<div id="drawToolsContainer">
+	  <h3>Draw on Map</h3>
+	  <p>Select a shape to draw:</p>
+
+	  <div class="draw-buttons">
+		<button id="drawPointBtn">🟢 Draw Point</button>
+		<button id="drawPolylineBtn">➖ Draw Line</button>
+		<button id="drawPolygonBtn">🔷 Draw Polygon</button>
+		<button id="drawRectangleBtn">⬛ Draw Rectangle</button>
+		<button id="editDrawBtn">✏️ Edit Drawing</button>
+		<button id="deleteSelectedBtn">🗑️ Delete</button>
+		<button id="clearDrawBtn">Clear All</button>
+	  </div>
+	</div>
+
+<hr class="section-divider" />	
+<!------------------------------------------------------------>
+	<div id="spatialAnalysisContainer" class="panel-section">
+	  <button id="startSpatialAnalysisBtn" class="btn primary full-width">📊 Start Spatial Analysis</button>
+	</div>	
+	
+<!------------------------------------------------------------>
+	<div id="geojsonLayersContainer">
+	  <h3>Map Layers</h3>
+	  <div id="geojsonLayerList"></div>
+	</div>
+
+<hr class="section-divider" />
+
+<!------------------------------------------------------------>
+<div id="contactContainer">
+  <img src="assets/logo.png" alt="Logo" class="contact-logo" />
+  <div class="cec-contact">
+    <p>
+      CEC Unit – Technical Services<br>
+      Environmental Management Authority<br>
+      <a href="mailto:CEC@ema.co.tt">CEC@ema.co.tt</a>
+    </p>
+  </div>
+</div>
+
+	
+<!------------------------------------------------------------>
+	</div>
+		<div id="togglePanelTab">&#9664;</div>
+			<div id="map"></div>
+  </div>
+
+
+<!------------------------------------------------------------>
+	<div id="labelModal" class="modal">
+	  <div class="modal-content">
+		<h3>Label Your Shape</h3>
+		<input type="text" id="shapeLabelInput" placeholder="Enter label" />
+		<div class="modal-buttons">
+		  <button id="saveLabelBtn">Save</button>
+		  <button id="cancelLabelBtn">Cancel</button>
+		</div>
+	  </div>
+	</div>
+
+<!------------------------------------------------------------>
+	<div id="legendContainer" class="legend-container"></div>
+
+<!------------------------------------------------------------>
+<!-- Spatial Analysis Modal Panel -->
+<div id="spatialAnalysisPanel" class="modal-panel hidden">
+  <div class="modal-header">
+    <h3>Spatial Analysis Results</h3>
+    <button class="close-btn" onclick="closeSpatialAnalysis()">✖</button>
+  </div>
+
+  <!-- CEC Table -->
+  <div class="panel-block">
+    <h4>Surrounding CECs (within 500m)</h4>
+    <div id="cecWarning" style="display: none; color: #b91c1c; font-weight: 500;">
+      ⚠️ CEC data not loaded. Please retry when data is available.
+    </div>
+    <table>
+      <thead>
+        <tr><th>CEC Reference Number</th><th>Year</th><th>Status</th></tr>
+      </thead>
+      <tbody id="cecResultsBody"></tbody>
+    </table>
+  </div>
+
+  <!-- Receptors Table -->
+  <div class="panel-block">
+    <h4>Nearby/Intersecting Sensitive Receptors</h4>
+    <table>
+      <thead>
+        <tr><th>Feature</th><th>Distance</th></tr>
+      </thead>
+      <tbody id="receptorResultsBody"></tbody>
+    </table>
+  </div>
+
+  <!-- Other Info Table -->
+  <div class="panel-block">
+    <h4>Other Information</h4>
+    <table class="no-vertical-border">
+      <tbody id="otherInfoTableBody">
+        <!-- These rows will be dynamically inserted -->
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Shape Properties Output -->
+  <div class="panel-block">
+    <h4>Shape Properties</h4>
+    <div id="shapePropertiesOutput">Select a shape to analyze.</div>
+  </div>
+
+  <!-- Visualize Button -->
+  <div class="panel-block">
+    <button id="visualizeBtn" class="btn secondary full-width">🗺️ Visualize</button>
+  </div>
+</div>
+
+<!------------------------------------------------------------>
+<!-- Spatial Visualization Popup -->
+<div id="visualizationPopup" class="modal-panel small hidden">
+  <div class="modal-header">
+    <h3>Spatial Visualization</h3>
+    <button class="close-btn" onclick="closeVisualization()">✖</button>
+  </div>
+  <div id="visualizationMap" style="height: 300px;"></div>
+  <div id="layerLegendSelector"></div>
+</div>
+
+<!------------------------------------------------------------>
+
+
+<!------------------------------------------------------------>
+<!-- Location Search (OpenStreetMap + CEC Reference) -->
+<div id="locationSearchContainer" class="leaflet-top leaflet-right custom-search-box">
+  <div class="leaflet-control leaflet-bar" style="padding: 8px; width: 250px;">
+    <input type="text" id="locationSearchInput" placeholder="Search location or CEC Ref" style="width: 100%; margin-bottom: 6px; padding: 4px;">
+    <div style="display: flex; gap: 6px;">
+      <button id="locationSearchBtn" class="btn small">🔍</button>
+      <button id="clearLocationSearchBtn" class="btn small secondary">❌</button>
+    </div>
+  </div>
+</div>
+
+<!------------------------------------------------------------>
+
+<!------------------------------------------------------------>
+  <!-- JS Modules -->
+  <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/mapBase.js"></script>
+  <script src="js/controls.js"></script>
+  <script src="js/filters.js"></script>
+  <script src="js/cecData.js"></script>
+  <script src="js/geojsonLayers.js"></script>
+  <script src="js/spatialAnalysis.js"></script>
+  <script src="js/nsl.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
