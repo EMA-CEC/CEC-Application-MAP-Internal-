@@ -29,6 +29,7 @@ function applyFilters() {
     const activityMatch = !activity || new RegExp(`\\b${activity.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')}\\b`).test(item["Designated Activity"]);
 
 
+
     const searchFields = [
       "Applicant",
       "Applicant Acronym",
