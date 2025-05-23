@@ -9,6 +9,7 @@ let editModeEnabled = false;
 let majorRoadsLayer = null;
 let majorRoadsLabels = null;
 let majorRoadsData = null;
+let activeDrawer = null;
 
 function initBaseMap() {
   map = L.map('map', {
@@ -96,10 +97,30 @@ function initDrawTools() {
     }
   });
 
-  document.getElementById("drawPointBtn").addEventListener("click", () => pointDrawer.enable());
-  document.getElementById("drawPolygonBtn").addEventListener("click", () => polygonDrawer.enable());
-  document.getElementById("drawRectangleBtn").addEventListener("click", () => rectangleDrawer.enable());
-  document.getElementById("drawPolylineBtn").addEventListener("click", () => polylineDrawer.enable());
+  document.getElementById("drawPointBtn").addEventListener("click", () => {
+  if (activeDrawer) activeDrawer.disable();
+  pointDrawer.enable();
+  activeDrawer = pointDrawer;
+});
+
+  document.getElementById("drawPolygonBtn").addEventListener("click", () => {
+  if (activeDrawer) activeDrawer.disable();
+  polygonDrawer.enable();
+  activeDrawer = polygonDrawer;
+});
+
+  document.getElementById("drawRectangleBtn").addEventListener("click", () => {
+  if (activeDrawer) activeDrawer.disable();
+  rectangleDrawer.enable();
+  activeDrawer = rectangleDrawer;
+});
+
+  document.getElementById("drawPolylineBtn").addEventListener("click", () => {
+  if (activeDrawer) activeDrawer.disable();
+  polylineDrawer.enable();
+  activeDrawer = polylineDrawer;
+});
+
 
   // Toggle edit mode
   document.getElementById("editDrawBtn").addEventListener("click", () => {
@@ -156,7 +177,8 @@ function initDrawTools() {
 
   map.on(L.Draw.Event.CREATED, function (e) {
     const layer = e.layer;
-
+    activeDrawer = null;
+	  
     if (layer instanceof L.Marker) {
       const yellowIcon = new L.Icon({
         iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-yellow.png",
