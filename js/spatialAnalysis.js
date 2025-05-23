@@ -140,19 +140,35 @@ function analyzeSensitiveReceptors(buffer, shape) {
       const feature = l.toGeoJSON();
       if (!feature.geometry) return;
 
-      const intersects = turf.booleanIntersects(shape, feature);
+const intersects = turf.booleanIntersects(shape, feature);
 let distance = "within boundaries";
 
 if (!intersects && turf.booleanIntersects(buffer, feature)) {
-  const shapeBoundary = turf.polygonToLine(shape);
-  const featureBoundary = turf.polygonToLine(feature);
+  try {
+    // Convert both features to lines
+    const shapeLine = turf.polygonToLine(shape);
+    const featureLine = turf.polygonToLine(feature);
 
-  const nearestDistance = turf.nearestPointOnLine(shapeBoundary, turf.centerOfMass(featureBoundary));
-  const nearestToFeature = turf.nearestPointOnLine(featureBoundary, turf.centerOfMass(shapeBoundary));
-  const d = turf.distance(nearestDistance, nearestToFeature, { units: "kilometers" });
+    // Densify both lines and find the minimum distance between any two points
+    const shapePoints = turf.explode(shapeLine);
+    const featurePoints = turf.explode(featureLine);
 
-  distance = Math.round(d * 1000) + " m";
+    let minDist = Infinity;
+
+    shapePoints.features.forEach(p1 => {
+      featurePoints.features.forEach(p2 => {
+        const d = turf.distance(p1, p2, { units: "kilometers" });
+        if (d < minDist) minDist = d;
+      });
+    });
+
+    distance = Math.round(minDist * 1000) + " m";
+  } catch (err) {
+    console.error("❌ Distance calculation error:", err);
+    distance = "Error";
+  }
 }
+
 
       if (intersects || turf.booleanIntersects(buffer, feature)) {
         let label = name;
