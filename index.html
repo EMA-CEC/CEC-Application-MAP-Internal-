@@ -98,7 +98,20 @@
 		<button id="utmClearBtn">Clear</button>
 	  </div>
 	</div>
-	
+<hr class="section-divider" />
+<!------------------------------------------------------------>	
+<!-- Location Search (OpenStreetMap + CEC Reference) -->
+<div id="locationSearchContainer" class="leaflet-top leaflet-right custom-search-box">
+  <div class="leaflet-control leaflet-bar" style="padding: 8px; width: 250px;">
+    <input type="text" id="locationSearchInput" placeholder="Search location or CEC Ref" style="width: 100%; margin-bottom: 6px; padding: 4px;">
+    <div style="display: flex; gap: 6px;">
+      <button id="locationSearchBtn" class="btn small">🔍</button>
+      <button id="clearLocationSearchBtn" class="btn small secondary">❌</button>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider" />	    
 <!------------------------------------------------------------>	
 	<div id="drawToolsContainer">
 	  <h3>Draw on Map</h3>
@@ -233,19 +246,6 @@
 <!------------------------------------------------------------>
 
 
-<!------------------------------------------------------------>
-<!-- Location Search (OpenStreetMap + CEC Reference) -->
-<div id="locationSearchContainer" class="leaflet-top leaflet-right custom-search-box">
-  <div class="leaflet-control leaflet-bar" style="padding: 8px; width: 250px;">
-    <input type="text" id="locationSearchInput" placeholder="Search location or CEC Ref" style="width: 100%; margin-bottom: 6px; padding: 4px;">
-    <div style="display: flex; gap: 6px;">
-      <button id="locationSearchBtn" class="btn small">🔍</button>
-      <button id="clearLocationSearchBtn" class="btn small secondary">❌</button>
-    </div>
-  </div>
-</div>
-
-<!------------------------------------------------------------>
 
 <!------------------------------------------------------------>
   <!-- JS Modules -->
