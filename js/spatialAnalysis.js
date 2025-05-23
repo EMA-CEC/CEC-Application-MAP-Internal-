@@ -141,8 +141,18 @@ function analyzeSensitiveReceptors(buffer, shape) {
       if (!feature.geometry) return;
 
       const intersects = turf.booleanIntersects(shape, feature);
-      const distance = intersects ? "within boundaries" :
-        Math.round(turf.distance(turf.center(shape), turf.center(feature), { units: "kilometers" }) * 1000) + " m";
+let distance = "within boundaries";
+
+if (!intersects && turf.booleanIntersects(buffer, feature)) {
+  const shapeBoundary = turf.polygonToLine(shape);
+  const featureBoundary = turf.polygonToLine(feature);
+
+  const nearestDistance = turf.nearestPointOnLine(shapeBoundary, turf.centerOfMass(featureBoundary));
+  const nearestToFeature = turf.nearestPointOnLine(featureBoundary, turf.centerOfMass(shapeBoundary));
+  const d = turf.distance(nearestDistance, nearestToFeature, { units: "kilometers" });
+
+  distance = Math.round(d * 1000) + " m";
+}
 
       if (intersects || turf.booleanIntersects(buffer, feature)) {
         let label = name;
