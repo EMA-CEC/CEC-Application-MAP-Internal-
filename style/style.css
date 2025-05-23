@@ -1,3 +1,4 @@
+
 html, body {
   margin: 0;
   height: 100%;
@@ -785,6 +786,12 @@ html, body {
   font-size: 0.8rem;
 }
 
+#locationSearchContainer {
+  z-index: 500;
+  margin-top: 5px; 
+  margin-right: 140px;
+}
+
 #locationSearchBtn {
   background-color: #f97316; 
   color: white;
@@ -852,5 +859,3 @@ html, body {
 #searchPanel button:hover {
   background-color: #ea580c;
 }
-
-
