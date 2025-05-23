@@ -85,6 +85,14 @@ function initDrawTools() {
     }
   });
 
+function enableOnly(drawer) {
+  if (activeDrawer && activeDrawer !== drawer) {
+    activeDrawer.disable();
+  }
+  drawer.enable();
+  activeDrawer = drawer;
+}
+	
   const pointDrawer = new L.Draw.Marker(map, drawControl.options.draw.marker);
   const polygonDrawer = new L.Draw.Polygon(map, drawControl.options.draw.polygon);
   const rectangleDrawer = new L.Draw.Rectangle(map, drawControl.options.draw.rectangle);
@@ -97,30 +105,10 @@ function initDrawTools() {
     }
   });
 
-  document.getElementById("drawPointBtn").addEventListener("click", () => {
-  if (activeDrawer) activeDrawer.disable();
-  pointDrawer.enable();
-  activeDrawer = pointDrawer;
-});
-
-  document.getElementById("drawPolygonBtn").addEventListener("click", () => {
-  if (activeDrawer) activeDrawer.disable();
-  polygonDrawer.enable();
-  activeDrawer = polygonDrawer;
-});
-
-  document.getElementById("drawRectangleBtn").addEventListener("click", () => {
-  if (activeDrawer) activeDrawer.disable();
-  rectangleDrawer.enable();
-  activeDrawer = rectangleDrawer;
-});
-
-  document.getElementById("drawPolylineBtn").addEventListener("click", () => {
-  if (activeDrawer) activeDrawer.disable();
-  polylineDrawer.enable();
-  activeDrawer = polylineDrawer;
-});
-
+document.getElementById("drawPointBtn").addEventListener("click", () => enableOnly(pointDrawer));
+document.getElementById("drawPolygonBtn").addEventListener("click", () => enableOnly(polygonDrawer));
+document.getElementById("drawRectangleBtn").addEventListener("click", () => enableOnly(rectangleDrawer));
+document.getElementById("drawPolylineBtn").addEventListener("click", () => enableOnly(polylineDrawer));
 
   // Toggle edit mode
   document.getElementById("editDrawBtn").addEventListener("click", () => {
