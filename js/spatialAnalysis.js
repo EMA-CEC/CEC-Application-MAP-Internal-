@@ -17,6 +17,7 @@ const analysisLayersToPreload = [
   "Tobago TCPD Policy"
 ];
 
+// ✅ Preload layers AND prepare Leaflet layer for spatial checks
 function preloadAnalysisLayers() {
   analysisLayersToPreload.forEach(async name => {
     const item = geojsonLayers.find(l => l.name === name);
@@ -25,13 +26,15 @@ function preloadAnalysisLayers() {
     const response = await fetch(item.url);
     const geojson = await response.json();
     item.preloadedData = geojson;
-    item.loadedLayer = L.geoJSON(geojson);
+    item.loadedLayer = L.geoJSON(geojson); // For analysis
   });
 
+  // Build lookup map
   geojsonLayers.byName = {};
   geojsonLayers.forEach(l => geojsonLayers.byName[l.name] = l);
 }
 
+// 🔘 UI Setup
 function setupSpatialAnalysisUI() {
   document.getElementById("startSpatialAnalysisBtn").addEventListener("click", () => {
     document.getElementById("spatialAnalysisPanel").classList.remove("hidden");
@@ -57,9 +60,9 @@ function performSpatialAnalysis() {
   const geomType = userShape.geometry?.type;
   const coords = userShape.geometry?.coordinates;
 
-  console.log("\uD83D\uDFE1 Raw lastDrawnShape:", lastDrawnShape);
-  console.log("\uD83E\uDDEA Geometry type:", geomType);
-  console.log("\uD83E\uDDEA Raw coordinates:", coords);
+  console.log("🟡 Raw lastDrawnShape:", lastDrawnShape);
+  console.log("🧪 Geometry type:", geomType);
+  console.log("🧪 Raw coordinates:", coords);
 
   if (!geomType || !coords || coords.length === 0 || (Array.isArray(coords[0]) && coords[0].length === 0)) {
     alert("Drawn shape is invalid or incomplete.");
@@ -75,7 +78,7 @@ function performSpatialAnalysis() {
     analyzeOtherInfo(userShape);
     displayShapeProperties(userShape);
   } catch (err) {
-    console.error("\u274C Buffering failed:", err);
+    console.error("❌ Buffering failed:", err);
     alert("An error occurred while buffering the shape.");
   }
 }
@@ -134,56 +137,58 @@ function analyzeSensitiveReceptors(buffer, shape) {
     if (!layer) return;
 
     layer.eachLayer(l => {
-      try {
-        const feature = l.toGeoJSON();
-        if (!feature.geometry) return;
+      const feature = l.toGeoJSON();
+      if (!feature.geometry) return;
 
-        const intersects = turf.booleanIntersects(shape, feature);
-        let distance = "within boundaries";
+const intersects = turf.booleanIntersects(shape, feature);
+let distance = "within boundaries";
 
-        if (!intersects && turf.booleanIntersects(buffer, feature)) {
-          const featureBoundary = turf.polygonToLine(feature);
+if (!intersects && turf.booleanIntersects(buffer, feature)) {
+  try {
+    const featureBoundary = turf.polygonToLine(feature);
 
-          if (shape.geometry.type === "Point") {
-            const d = turf.pointToLineDistance(shape, featureBoundary, { units: "kilometers" });
-            distance = Math.round(d * 1000) + " m";
-          } else if (shape.geometry.type === "LineString") {
-            const shapePoints = turf.explode(shape);
-            let minDist = Infinity;
-            shapePoints.features.forEach(p => {
-              const d = turf.pointToLineDistance(p, featureBoundary, { units: "kilometers" });
-              if (!isNaN(d) && d < minDist) minDist = d;
-            });
-            distance = Math.round(minDist * 1000) + " m";
-          } else if (shape.geometry.type === "Polygon" || shape.geometry.type === "MultiPolygon") {
-            const shapeBoundary = turf.polygonToLine(shape);
-            const shapePoints = turf.explode(shapeBoundary);
-            const featurePoints = turf.explode(featureBoundary);
-            let minDist = Infinity;
-            shapePoints.features.forEach(p1 => {
-              featurePoints.features.forEach(p2 => {
-                const d = turf.distance(p1, p2, { units: "kilometers" });
-                if (!isNaN(d) && d < minDist) minDist = d;
-              });
-            });
-            distance = Math.round(minDist * 1000) + " m";
-          } else {
-            distance = "Unsupported geometry";
-          }
-        }
+    if (shape.geometry.type === "Point") {
+      const d = turf.pointToLineDistance(shape, featureBoundary, { units: "kilometers" });
+      distance = Math.round(d * 1000) + " m";
+    } else if (shape.geometry.type === "LineString") {
+      const shapePoints = turf.explode(shape);
+      let minDist = Infinity;
+      shapePoints.features.forEach(p => {
+        const d = turf.pointToLineDistance(p, featureBoundary, { units: "kilometers" });
+        if (d < minDist) minDist = d;
+      });
+      distance = Math.round(minDist * 1000) + " m";
+    } else if (shape.geometry.type === "Polygon" || shape.geometry.type === "MultiPolygon") {
+      const shapeBoundary = turf.polygonToLine(shape);
+      const shapePoints = turf.explode(shapeBoundary);
+      const featurePoints = turf.explode(featureBoundary);
+      let minDist = Infinity;
+      shapePoints.features.forEach(p1 => {
+        featurePoints.features.forEach(p2 => {
+          const d = turf.distance(p1, p2, { units: "kilometers" });
+          if (d < minDist) minDist = d;
+        });
+      });
+      distance = Math.round(minDist * 1000) + " m";
+    } else {
+      distance = "Unsupported geometry";
+    }
+  } catch (err) {
+    console.error("❌ Distance calculation error:", err);
+    distance = "Error";
+  }
+}
 
+      if (intersects || turf.booleanIntersects(buffer, feature)) {
         let label = name;
         if (name === "Forest Reserve") {
           const subname = feature.properties?.NAME;
           if (subname && subname !== "null") label = `Forest Reserve - ${subname}`;
         }
-
         const row = document.createElement("tr");
         row.innerHTML = `<td>${label}</td><td>${distance}</td>`;
         container.appendChild(row);
         found++;
-      } catch (err) {
-        console.warn(`\u274C Error processing feature in ${name}:`, err);
       }
     });
   });
@@ -193,6 +198,7 @@ function analyzeSensitiveReceptors(buffer, shape) {
   }
 }
 
+// Layers and labels for Other Info table
 const intersectLayers = [
   { name: "Municipality", layers: ["Municipality"], labelField: "NAME_1" },
   { name: "Watershed", layers: ["Trinidad Watersheds", "Tobago Watersheds"], labelField: { "Trinidad Watersheds": "NAME", "Tobago Watersheds": "WATERSHED" } },
@@ -251,7 +257,9 @@ function displayShapeProperties(shape) {
   try {
     if (type === "Point") {
       const [lon, lat] = geom.coordinates;
-      const { easting, northing } = convertLatLonToUTM(lat, lon);
+
+      // ✅ Convert lat/lon to UTM 32620
+      const { easting, northing } = convertLatLonToUTM(lat, lon);  // ← Use your existing function
       html = `<strong>Easting:</strong> ${easting.toFixed(2)}<br><strong>Northing:</strong> ${northing.toFixed(2)}`;
     }
     else if (type === "LineString") {
@@ -259,7 +267,7 @@ function displayShapeProperties(shape) {
       html = `<strong>Length:</strong> ${length.toFixed(2)} m`;
     }
     else if (type === "Polygon") {
-      const area = turf.area(turfGeom);
+      const area = turf.area(turfGeom); // m²
       const perimeter = turf.length(turf.polygonToLine(turfGeom), { units: "meters" });
       html = `
         <strong>Area:</strong> ${area.toFixed(2)} m² (${(area / 10000).toFixed(2)} ha)<br>
@@ -269,7 +277,7 @@ function displayShapeProperties(shape) {
       html = "Unsupported geometry type.";
     }
   } catch (err) {
-    console.error("\u274C Shape property calculation failed:", err);
+    console.error("❌ Shape property calculation failed:", err);
     html = "Failed to calculate shape properties.";
   }
 
