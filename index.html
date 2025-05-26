@@ -82,9 +82,31 @@
 
   <!-- Stats -->
   <div id="filterStats">Showing all applications</div>
+<hr class="section-divider" />
+
+<!-- CEC Reference Search -->
+<!-- CEC Reference Search -->
+<div id="cecSearchGroup">
+  <label for="cecRefInput">Search by CEC Reference:</label>
+  <input type="text" id="cecRefInput" placeholder="e.g. CEC-1234 or 1234" />
+  <div class="cec-search-buttons">
+    <button id="cecSearchBtn">🔍 Search</button>
+    <button id="cecClearBtn">❌ Clear</button>
+  </div>
+</div> 
 </div>
 </div>
 
+<!------------------------------------------------------------>
+	<div id="osmSearchContainer">
+	  <h3>Search by Location</h3>
+	  <div class="osm-input-group">
+		<input type="text" id="osmSearchInput" placeholder="Enter location..." autocomplete="off" />
+		<button id="osmClearBtn" title="Clear location search">❌</button>
+	  </div>
+	  <ul id="osmSuggestions" class="suggestions-list"></ul>
+	</div>
+	
 <!------------------------------------------------------------>
 	<div id="utmSearchContainer">
 	  <h3>Search by UTM Coordinates</h3>
@@ -95,8 +117,8 @@
 	  <input type="number" id="utmNorthing" placeholder="Enter Northing (e.g. 1189000)" />
 
 	  <div class="utm-buttons">
-		<button id="utmSearchBtn">Search</button>
-		<button id="utmClearBtn">Clear</button>
+		<button id="utmSearchBtn">🔍 Search</button>
+		<button id="utmClearBtn">❌ Clear</button>
 	  </div>
 	</div>
 	
@@ -224,21 +246,6 @@
   </div>
   <div id="visualizationMap" style="height: 300px;"></div>
   <div id="layerLegendSelector"></div>
-</div>
-
-<!------------------------------------------------------------>
-
-
-<!------------------------------------------------------------>
-<!-- Location Search (OpenStreetMap + CEC Reference) -->
-<div id="locationSearchContainer" class="leaflet-top leaflet-right custom-search-box">
-  <div class="leaflet-control leaflet-bar" style="padding: 8px; width: 250px;">
-    <input type="text" id="locationSearchInput" placeholder="Search location or CEC Ref" style="width: 100%; margin-bottom: 6px; padding: 4px;">
-    <div style="display: flex; gap: 6px;">
-      <button id="locationSearchBtn" class="btn small">🔍</button>
-      <button id="clearLocationSearchBtn" class="btn small secondary">❌</button>
-    </div>
-  </div>
 </div>
 
 <!------------------------------------------------------------>
