@@ -52,7 +52,7 @@ function loadCECData() {
           <div class="popup-field"><strong>Easting:</strong> ${item["Easting"]}</div>
           <div class="popup-field"><strong>Northing:</strong> ${item["Northing"]}</div>
           <div class="popup-field"><strong>Status:</strong> ${getStatusBadge(item["Application Determination"])}</div>
-          <div class="popup-field"><strong>Determination Date:</strong> ${item["Determination Date"]}</div>
+          <div class="popup-field"><strong>Determination Date:</strong> ${formatDateOnly(item["Determination Date"])}</div>
           <div class="popup-field"><strong>Comment:</strong> ${item["Comment"] || "N/A"}</div>
         `;
 
@@ -119,7 +119,7 @@ function renderCECData(data) {
       <div class="popup-field"><strong>Easting:</strong> ${item["Easting"]}</div>
       <div class="popup-field"><strong>Northing:</strong> ${item["Northing"]}</div>
       <div class="popup-field"><strong>Status:</strong> ${getStatusBadge(item["Application Determination"])}</div>
-      <div class="popup-field"><strong>Determination Date:</strong> ${item["Determination Date"]}</div>
+      <div class="popup-field"><strong>Determination Date:</strong> ${formatDateOnly(item["Determination Date"])}</div>
       <div class="popup-field"><strong>Comment:</strong> ${item["Comment"] || "N/A"}</div>
     `;
 

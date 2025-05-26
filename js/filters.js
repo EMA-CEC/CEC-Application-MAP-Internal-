@@ -123,4 +123,137 @@ window.addEventListener("DOMContentLoaded", () => {
   document.getElementById("clearFiltersBtn").addEventListener("click", clearFilters);
   setupFilterToggle();
   setupUTMSearch();
+  setupCECSearchInFilter();
+  setupOSMLocationSearch();
 });
+
+function setupCECSearchInFilter() {
+  const input = document.getElementById("cecRefInput");
+  const searchBtn = document.getElementById("cecSearchBtn");
+  const clearBtn = document.getElementById("cecClearBtn");
+
+  let cecSearchMarker = null;
+
+  function performSearch() {
+    const query = input.value.trim();
+    if (!query || !window.allCECData) return;
+
+    let numPart = null;
+    const cecMatch = query.match(/^CEC\s*-?\s*(\d+)/i);
+    if (cecMatch) {
+      numPart = cecMatch[1];
+    } else if (/^\d+$/.test(query)) {
+      numPart = query;
+    }
+
+    if (!numPart) return;
+
+    const parsedNum = parseInt(numPart);
+    const match = allCECData.find(row => parseInt(row["CEC Reference"]) === parsedNum);
+
+    if (match) {
+      const [lat, lon] = convertUTMToLatLon(match.Easting, match.Northing);
+      if (cecSearchMarker) map.removeLayer(cecSearchMarker);
+
+      cecSearchMarker = L.circleMarker([lat, lon], {
+        radius: 8,
+        color: "#e11d48",
+        fillColor: "#f43f5e",
+        fillOpacity: 0.8,
+        weight: 2
+      }).addTo(map).bindPopup(`<strong>CEC Reference:</strong> ${match["CEC Reference"]}`).openPopup();
+
+      map.setView([lat, lon], 16);
+    } else {
+      alert("No matching CEC Reference found.");
+    }
+  }
+
+  searchBtn.addEventListener("click", performSearch);
+  input.addEventListener("keydown", e => {
+    if (e.key === "Enter") performSearch();
+  });
+
+  clearBtn.addEventListener("click", () => {
+    input.value = "";
+    if (cecSearchMarker) {
+      map.removeLayer(cecSearchMarker);
+      cecSearchMarker = null;
+    }
+  });
+}
+
+function setupOSMLocationSearch() {
+  const input = document.getElementById("osmSearchInput");
+  const suggestions = document.getElementById("osmSuggestions");
+  const clearBtn = document.getElementById("osmClearBtn");
+
+  let searchMarker = null;
+  let timeout = null;
+
+  input.addEventListener("input", () => {
+    const query = input.value.trim();
+    if (!query) {
+      suggestions.innerHTML = "";
+      return;
+    }
+
+    clearTimeout(timeout);
+    timeout = setTimeout(async () => {
+      const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&countrycodes=tt&q=${encodeURIComponent(query)}&limit=5`);
+      const results = await res.json();
+
+      suggestions.innerHTML = "";
+      results.forEach(place => {
+        const li = document.createElement("li");
+        li.textContent = place.display_name;
+        li.addEventListener("click", () => {
+          input.value = place.display_name;
+          suggestions.innerHTML = "";
+
+          const lat = parseFloat(place.lat);
+          const lon = parseFloat(place.lon);
+
+          if (searchMarker) map.removeLayer(searchMarker);
+
+          searchMarker = L.circle([lat, lon], {
+            radius: 15,
+            color: "#e11d48",
+            fillColor: "#f43f5e",
+            fillOpacity: 0.5,
+            weight: 2
+          }).addTo(map).bindPopup(`<strong>${place.display_name}</strong>`).openPopup();
+
+          map.setView([lat, lon], 16);
+        });
+        suggestions.appendChild(li);
+      });
+    }, 300);
+  });
+
+	input.addEventListener("keydown", (e) => {
+	  if (e.key === "Enter") {
+		e.preventDefault();
+		const firstSuggestion = suggestions.querySelector("li");
+		if (firstSuggestion) {
+		  firstSuggestion.click();
+		}
+	  }
+	});
+
+  clearBtn.addEventListener("click", () => {
+    input.value = "";
+    suggestions.innerHTML = "";
+    if (searchMarker) {
+      map.removeLayer(searchMarker);
+      searchMarker = null;
+    }
+  });
+
+  // Hide suggestions when focus is lost
+  input.addEventListener("blur", () => {
+    setTimeout(() => {
+      suggestions.innerHTML = "";
+    }, 200);
+  });
+}

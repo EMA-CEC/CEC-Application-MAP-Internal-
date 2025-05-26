@@ -22,6 +22,21 @@ function formatDateToComparable(dateStr) {
   return `${year}-${monthMap[mon]}-${day.padStart(2, '0')}`;
 }
 
+function formatDateOnly(dateStr) {
+  if (!dateStr || typeof dateStr !== "string") return "N/A";
+
+  const date = new Date(dateStr);
+  if (isNaN(date)) return "Invalid Date";
+
+  const day = String(date.getDate()).padStart(2, "0");
+  const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const month = monthNames[date.getMonth()];
+  const year = date.getFullYear();
+
+  return `${day} ${month} ${year}`;
+}
+
 function convertUTMToLatLon(easting, northing) {
   const proj32620 = "+proj=utm +zone=20 +datum=WGS84 +units=m +no_defs";
   const proj4326 = "+proj=longlat +datum=WGS84 +no_defs";

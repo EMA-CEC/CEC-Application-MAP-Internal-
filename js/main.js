@@ -7,7 +7,6 @@ window.addEventListener('DOMContentLoaded', () => {
   setupGeoJSONLayers();
   preloadAnalysisLayers();
   setupSpatialAnalysisUI();
-  setupLocationSearch();
 
   // Initialize zoom and scale control positions
   const zoomControl = document.querySelector(".leaflet-control-zoom");
