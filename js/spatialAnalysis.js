@@ -140,44 +140,52 @@ function analyzeSensitiveReceptors(buffer, shape) {
       const feature = l.toGeoJSON();
       if (!feature.geometry) return;
 
-const intersects = turf.booleanIntersects(shape, feature);
-let distance = "within boundaries";
+      const intersects = turf.booleanIntersects(shape, feature);
+      let distance = "within boundaries";
 
-if (!intersects && turf.booleanIntersects(buffer, feature)) {
-  try {
-    const featureBoundary = turf.polygonToLine(feature);
+      if (!intersects && turf.booleanIntersects(buffer, feature)) {
+        try {
+          const shapeGeom = shape.geometry;
+          const featureGeom = feature.geometry;
 
-    if (shape.geometry.type === "Point") {
-      const d = turf.pointToLineDistance(shape, featureBoundary, { units: "kilometers" });
-      distance = Math.round(d * 1000) + " m";
-    } else if (shape.geometry.type === "LineString") {
-      const shapePoints = turf.explode(shape);
-      let minDist = Infinity;
-      shapePoints.features.forEach(p => {
-        const d = turf.pointToLineDistance(p, featureBoundary, { units: "kilometers" });
-        if (d < minDist) minDist = d;
-      });
-      distance = Math.round(minDist * 1000) + " m";
-    } else if (shape.geometry.type === "Polygon" || shape.geometry.type === "MultiPolygon") {
-      const shapeBoundary = turf.polygonToLine(shape);
-      const shapePoints = turf.explode(shapeBoundary);
-      const featurePoints = turf.explode(featureBoundary);
-      let minDist = Infinity;
-      shapePoints.features.forEach(p1 => {
-        featurePoints.features.forEach(p2 => {
-          const d = turf.distance(p1, p2, { units: "kilometers" });
-          if (d < minDist) minDist = d;
-        });
-      });
-      distance = Math.round(minDist * 1000) + " m";
-    } else {
-      distance = "Unsupported geometry";
-    }
-  } catch (err) {
-    console.error("❌ Distance calculation error:", err);
-    distance = "Error";
-  }
-}
+          // Get lines for perimeter comparison
+          const shapeLine = (shapeGeom.type === "Polygon" || shapeGeom.type === "MultiPolygon")
+            ? turf.polygonToLine(shape)
+            : (shapeGeom.type === "LineString" || shapeGeom.type === "MultiLineString")
+              ? shape
+              : null;
+
+          const featureLine = (featureGeom.type === "Polygon" || featureGeom.type === "MultiPolygon")
+            ? turf.polygonToLine(feature)
+            : (featureGeom.type === "LineString" || featureGeom.type === "MultiLineString")
+              ? feature
+              : null;
+
+          let d;
+
+          if (shapeGeom.type === "Point") {
+            // Distance from point to feature perimeter
+            const point = shape;
+            const ptOnReceptor = turf.nearestPointOnLine(featureLine, turf.getCoord(point));
+            d = turf.distance(point, ptOnReceptor, { units: "kilometers" });
+          } else if (featureGeom.type === "Point") {
+            // Distance from feature point to shape
+            const pt = turf.point(feature.geometry.coordinates);
+            const ptOnShape = turf.nearestPointOnLine(shapeLine, turf.getCoord(pt));
+            d = turf.distance(ptOnShape, pt, { units: "kilometers" });
+          } else {
+            // Use center of each geometry to get closest line points
+            const ptOnShape = turf.nearestPointOnLine(shapeLine, turf.centerOfMass(feature).geometry.coordinates);
+            const ptOnReceptor = turf.nearestPointOnLine(featureLine, turf.centerOfMass(shape).geometry.coordinates);
+            d = turf.distance(ptOnShape, ptOnReceptor, { units: "kilometers" });
+          }
+
+          distance = Math.round(d * 1000) + " m";
+        } catch (err) {
+          console.warn("Distance calculation failed:", err);
+          distance = "distance unavailable";
+        }
+      }
 
       if (intersects || turf.booleanIntersects(buffer, feature)) {
         let label = name;
@@ -185,6 +193,7 @@ if (!intersects && turf.booleanIntersects(buffer, feature)) {
           const subname = feature.properties?.NAME;
           if (subname && subname !== "null") label = `Forest Reserve - ${subname}`;
         }
+
         const row = document.createElement("tr");
         row.innerHTML = `<td>${label}</td><td>${distance}</td>`;
         container.appendChild(row);
