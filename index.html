@@ -31,7 +31,7 @@
           <p>This tool integrates CEC Applications and other EMA housed data to offer a basic solution for analysis. It is designed to facilitate some general analysis which may assist with better informed decision-making.</p>
           <p>
 			<div id= "docuLinks">
-          <a href="https://drive.google.com/file/d/1wZDkndLwJR_opdbYEIeqzrym-vmclrdC/view?usp=drive_link" target="_blank" rel="noopener noreferrer">Documentation</a><br>
+          <a href="https://drive.google.com/file/d/1VKfjK3KEq_U3nK0OnuZLw-4t0aIkrvcm/view" target="_blank" rel="noopener noreferrer">Documentation</a><br>
           <a href="https://docs.google.com/spreadsheets/d/1vUnovvw4xDDZq-IH82ZxwCrZp7U1P-Vfbbof-a_JTYI/edit?gid=0#gid=0" target="_blank" rel="noopener noreferrer">CEC Applications Data</a>
           <!--  <a href="mailto:CEC@ema.co.tt">CEC@ema.co.tt</a>  -->
 		  </div>
@@ -150,8 +150,19 @@
 	  <div id="geojsonLayerList"></div>
 	</div>
 
-<hr class="section-divider" />
+<hr class="section-divider" />	
+<!------------------------------------------------------------>
+<div id="nslIndexContainer">
+  <h3>NSL Index Model</h3>
+  <div class="nsl-button-group">
+    <button class="btn" id="nslReadMeBtn">📘 Read Me</button>
+    <button class="btn" id="nslDASelectionBtn">📋 DA Selection</button>
+    <button class="btn" id="nslRiskAssessmentBtn">⚠️ Risk Assessment</button>
+    <button class="btn" id="nslModelOutputBtn">📊 Model Output</button>
+  </div>
+</div>
 
+<hr class="section-divider" />	
 <!------------------------------------------------------------>
 <div id="contactContainer">
   <img src="assets/logo.png" alt="Logo" class="contact-logo" />
@@ -164,7 +175,6 @@
   </div>
 </div>
 
-	
 <!------------------------------------------------------------>
 	</div>
 		<div id="togglePanelTab">&#9664;</div>
@@ -249,6 +259,169 @@
 </div>
 
 <!------------------------------------------------------------>
+<!-- DA Selection Panel -->
+<div id="daSelectionPanel" class="right-slide-panel">
+  <div class="panel-header">
+    <h2>Designated Activity Selection</h2>
+    <button class="close-btn" onclick="closeDAPanel()">✖</button>
+  </div>
+
+  <div class="panel-content">
+    <!-- Project Title -->
+    <div class="form-section">
+      <h3>Project Title</h3>
+      <textarea id="projectTitle" rows="2" placeholder="Enter the project title..."></textarea>
+    </div>
+
+    <!-- CEC Number -->
+    <div class="form-section">
+      <h3>CEC Number</h3>
+      <input type="text" id="cecNumber" placeholder="Enter the CEC Reference Number..." />
+    </div>
+
+    <!-- Designated Activities Table -->
+    <div class="form-section">
+      <h3>Select Applicable Designated Activities</h3>
+      <div class="da-table-wrapper">
+        <table id="daTable">
+          <thead>
+            <tr>
+              <th>Designated Activity</th>
+              <th>Description</th>
+              <th>Selection</th>
+            </tr>
+          </thead>
+          <tbody id="daTableBody">
+            <!-- Rows will be dynamically added -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+      <button class="btn secondary" onclick="clearDASelection()">Clear Selection</button>
+      <button class="btn" onclick="confirmDASelection()">Confirm & Continue</button>
+    </div>
+  </div>
+</div>
+
+<!------------------------------------------------------------>
+<!-- Risk Assessment Panel -->
+<div id="riskAssessmentPanel" class="right-slide-panel">
+  <div class="panel-header">
+    <h2>Risk Assessment</h2>
+    <button class="close-btn" onclick="closeRiskPanel()">✖</button>
+  </div>
+
+  <div class="panel-content">
+    <!-- Project Title -->
+    <div class="form-section">
+      <h3>Project Title</h3>
+      <div id="riskProjectTitle" class="readonly-input"></div>
+    </div>
+
+    <!-- CEC Number -->
+    <div class="form-section">
+      <h3>CEC Number</h3>
+      <input type="text" id="riskCecNumber" readonly />
+    </div>
+
+    <!-- Risk Table -->
+    <div class="form-section">
+      <h3>Designated Activity Risk Assessment</h3>
+      <div class="da-table-wrapper">
+        <table id="riskTable">
+          <thead>
+            <tr>
+              <th>Designated Activity</th>
+              <th>Nature</th>
+              <th>Scale</th>
+              <th>Location</th>
+              <th>Nature Risk Guidance</th>
+              <th>Scale Risk Guidance</th>
+              <th>Location Risk Guidance</th>
+            </tr>
+          </thead>
+          <tbody id="riskTableBody">
+            <!-- Dynamically populated -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Confirm Button -->
+    <div class="action-buttons">
+      <button class="btn" onclick="confirmRiskAssessment()">Confirm & Continue</button>
+    </div>
+  </div>
+</div>
+
+<!------------------------------------------------------------>
+<!-- Model Output Panel -->
+<div id="modelOutputPanel" class="modal-centered-panel" style="display: none;">
+  <div class="panel-header">
+    <button class="close-btn" onclick="closeModelOutputPanel()">✖</button>
+  </div>
+
+  <div class="panel-content">
+    <!-- Project Info -->
+    <div class="form-section">
+      <h3>Project Title</h3>
+      <div id="outputProjectTitle" class="readonly-input"></div>
+
+      <h3>CEC Number</h3>
+      <div id="outputCecNumber" class="readonly-input"></div>
+    </div>
+
+    <!-- DA List -->
+    <div class="form-section">
+      <h3>Designated Activities Selected</h3>
+      <div id="outputDAList" class="readonly-input"></div>
+    </div>
+
+    <!-- NSL Index Summary -->
+    <div class="form-section">
+      <h3>NSL Index Summary</h3>
+      <div id="nslSummaryContainer" class="readonly-input"></div>
+    </div>
+
+    <!-- NSL Index Detail -->
+    <div class="form-section">
+      <h3>NSL Index Detail</h3>
+      <div id="nslDetailContainer" class="readonly-input"></div>
+    </div>
+
+    <!-- NSL Chart -->
+    <div class="form-section">
+      <h3>NSL Index Chart</h3>
+      <canvas id="nslChart" width="400" height="200"></canvas>
+    </div>
+
+    <!-- Officer Decision -->
+    <div class="form-section">
+      <h3>Officer Decision</h3>
+      <textarea id="officerDecision" rows="2" placeholder="Type decision..." oninput="autoResize(this)"></textarea>
+    </div>
+
+    <!-- Officer Signature + Date -->
+    <div class="form-section" style="display: flex; justify-content: space-between; align-items: flex-end;">
+      <div>
+        <h3>Officer Signature</h3>
+        <input id="officerSignature" type="text" placeholder="Type your name..." />
+      </div>
+      <div id="modelDateStamp" style="font-size: 0.9rem; color: #666;">Date: </div>
+    </div>
+
+    <!-- Download Button -->
+	<div class="download-controls">
+	  <button class="btn" id="downloadModelOutputBtn">📥 Download</button>
+	</div>
+  </div>
+</div>
+
+<!------------------------------------------------------------>
+
 
 <!------------------------------------------------------------>
   <!-- JS Modules -->
@@ -262,5 +435,12 @@
   <script src="js/spatialAnalysis.js"></script>
   <script src="js/nsl.js"></script>
   <script src="js/main.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
 </body>
 </html>
+
+
+<!---NOTE: Play around with adding links to the CEC folders-->
