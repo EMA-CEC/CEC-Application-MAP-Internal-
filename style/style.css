@@ -498,11 +498,12 @@ html, body {
   align-items: center;
   gap: 10px;
   padding: 12px;
+  margin-top: 20;
+  padding-top: 10;
   border-top: 1px solid #ddd;
   font-size: 0.85rem;
   background: #f9f9f9;
   color: #1f2937;
-  margin-top: auto;
 }
 
 .contact-logo {
@@ -976,3 +977,339 @@ html, body {
 #osmSuggestions li:hover {
   background-color: #f0f0f0;
 }
+
+#nslIndexContainer {
+  margin-top: 5px;
+  padding-top: 5px;
+  font-size: 0.85rem;
+}
+
+#nslIndexContainer h3 {
+  margin-bottom: 10px;
+  font-size: 1rem;
+  color: #2e6b2d;
+}
+
+.nsl-button-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.nsl-button-group .btn {
+  padding: 8px 12px;
+  font-size: 0.85rem;
+  border: none;
+  border-radius: 4px;
+  background-color: #336699;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  text-align: left;
+}
+
+.nsl-button-group .btn:hover {
+  background-color: #254a73;
+}
+
+.right-slide-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 70%;
+  height: 100%;
+  background: white;
+  border-left: 2px solid #ccc;
+  box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+  z-index: 2000;
+  display: none;
+  flex-direction: column;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.panel-header h2 {
+  font-size: 1.2rem;
+  color: #2e6b2d;
+  margin: 0;
+}
+
+.close-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: #999;
+}
+
+.form-section {
+  margin-bottom: 20px;
+}
+
+textarea#projectTitle {
+  width: 100%;
+  font-size: 0.95rem;
+  padding: 6px;
+  resize: vertical;
+  min-height: 60px;
+}
+
+#cecNumber {
+  width: 100%;
+  padding: 6px;
+  font-size: 0.95rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.da-table-wrapper {
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+#daTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  background-color: #f8f9fa;
+}
+
+#daTable thead {
+  background-color: #336699;
+  color: white;
+}
+
+#daTable th, #daTable td {
+  padding: 10px;
+  border: 1px solid #ccc;
+  text-align: left;
+  vertical-align: top;
+}
+
+#daTable td.desc {
+  white-space: pre-line;
+}
+
+#daTable tbody tr:nth-child(even) {
+  background-color: #eef2f5;
+}
+
+#daTable select {
+  width: 100%;
+  padding: 4px;
+  font-size: 0.85rem;
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+#riskProjectTitle {
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  padding: 6px;
+  resize: none;
+  overflow: hidden;
+  background-color: #f9fafb;
+  white-space: pre-wrap;
+  line-height: 1.4
+}
+
+.readonly-input {
+  width: 100%;
+  min-height: 36px;
+  padding: 6px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  background-color: #f9fafb;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  overflow: hidden;
+}
+
+#riskTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  background-color: #f8f9fa;
+}
+
+#riskTable td:nth-child(2),
+#riskTable th:nth-child(2), /* Nature */
+#riskTable td:nth-child(3),
+#riskTable th:nth-child(3), /* Scale */
+#riskTable td:nth-child(4),
+#riskTable th:nth-child(4)  /* Location */
+{
+  width: 5%;
+  min-width: 90px;
+}
+
+#riskTable td:nth-child(5),
+#riskTable td:nth-child(6),
+#riskTable td:nth-child(7) {
+  width: auto;
+}
+
+#riskTable thead {
+  background-color: #336699;
+  color: white;
+}
+
+#riskTable th, #riskTable td {
+  padding: 10px;
+  border: 1px solid #ccc;
+  vertical-align: top;
+  text-align: left;
+}
+
+#riskTable tbody tr:nth-child(even) {
+  background-color: #eef2f5;
+}
+
+#riskTable select {
+  width: 100%;
+  padding: 4px;
+  font-size: 0.85rem;
+}
+
+#riskTable td.guidance {
+  white-space: pre-line;
+  font-size: 0.8rem;
+  color: #444;
+}
+
+#riskTable td.guidance strong {
+  color: #1e3a8a;
+}
+
+.da-table-wrapper {
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: white;
+}
+
+#modelOutputPanel.modal-centered-panel {
+  position: fixed;
+  top: 5px;
+  bottom: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 816px;
+  height: calc(100vh - 10px);
+  max-height: 1056px;
+
+  background: white;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.1),
+    0 4px 16px rgba(0, 0, 0, 0.05),
+    0 8px 24px rgba(0, 0, 0, 0.03);
+
+  z-index: 3000;
+  display: none;
+  flex-direction: column;
+  padding: 30px 40px;
+  box-sizing: border-box;
+  overflow: hidden;
+  font-size: 0.9rem;
+  border-radius: 6px;
+}
+
+#modelOutputPanel .panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.2rem;
+  margin-bottom: 15px;
+}
+
+#modelOutputPanel .panel-content {
+  flex-grow: 1;
+  overflow-y: auto;
+  font-size: 13px;
+}
+
+#modelOutputPanel .form-section {
+  margin-bottom: 10px;
+}
+
+#modelOutputPanel .form-section h3 {
+  margin: 4px 0;
+  font-size: 0.95rem;
+}
+
+#modelOutputPanel .readonly-input,
+#modelOutputPanel input,
+#modelOutputPanel textarea {
+  width: 100%;
+  font-size: 0.85rem;
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  background-color: #f9fafb;
+}
+
+#modelOutputPanel #officerSignature,
+#modelOutputClone #officerSignature {
+  font-family: "Segoe Script", cursive;
+  font-size: 1.1rem;
+}
+
+#modelOutputPanel #officerDecision,
+#modelOutputClone #officerDecision {
+  font-size: 0.85rem;
+  line-height: 1.3;
+  resize: none;
+  overflow: hidden;
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #f9fafb;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+#modelOutputPanel #modelDateStamp {
+  font-size: 0.85rem;
+  color: #555;
+  text-align: right;
+}
+
+#modelOutputPanel #nslChart {
+  width: 80%;
+  height: 120px;
+  padding: 4px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+#modelOutputPanel .btn {
+  font-size: 0.85rem;
+  padding: 6px 10px;
+}
+
+body.modal-open {
+  overflow: hidden;
+}
+
