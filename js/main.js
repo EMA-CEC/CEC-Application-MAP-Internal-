@@ -40,3 +40,30 @@ document.getElementById("togglePanelTab").addEventListener("click", () => {
   }, 310);
 });
 
+document.addEventListener("DOMContentLoaded", () => {
+  // NSL Read Me
+  document.getElementById("nslReadMeBtn").addEventListener("click", () => {
+    window.open("https://drive.google.com/file/d/1a61Tte8xPK8YM4FgRKFaeqsfwEoMgs3N/view", "_blank");
+  });
+
+  // DA Selection Panel
+  document.getElementById("nslDASelectionBtn").addEventListener("click", openDAPanel);
+
+
+  // Risk Assessment Panel
+  document.getElementById("nslRiskAssessmentBtn").addEventListener("click", openRiskPanel);
+
+
+  // Model Output Panel
+  document.getElementById("nslModelOutputBtn").addEventListener("click", () => {
+    if (window.nslData?.riskRatings?.length) {
+      openModelOutputPanel(); 
+    } else {
+    alert("Please complete the Risk Assessment and click Confirm & Continue before accessing the Model Output.");
+    }
+  });
+  
+  document.getElementById("downloadModelOutputBtn").addEventListener("click", downloadModelOutput); 
+});
+
+

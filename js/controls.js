@@ -16,7 +16,3 @@ function setupControls() {
   }
 }
 
-document.getElementById("searchToggle").addEventListener("click", () => {
-  const container = document.getElementById("searchContainer");
-  container.classList.toggle("collapsed");
-});
