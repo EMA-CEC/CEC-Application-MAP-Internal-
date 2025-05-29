@@ -5,7 +5,7 @@ window.allCECData = []; // Store original dataset and expose globally
 
 // Load and display CEC Applications
 function loadCECData() {
-  fetch("https://script.google.com/macros/s/AKfycbxUO-Mkx_MCF2pqfoTBoMr6CpkIQnxfYjy5zZr3wflPAwh8M9AV7OqZXoLkvvMLDtLBfw/exec")
+  fetch("https://script.google.com/macros/s/AKfycbzfSWkaAFunIk3Zb1sUAsYbL2JdF7m2UDO67iqi51ZbpLOvVYc2vE1thffLXZY580SrNQ/exec")
     .then(res => res.json())
     .then(data => {
       allCECData = data;
