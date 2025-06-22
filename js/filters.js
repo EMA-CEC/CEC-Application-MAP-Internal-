@@ -51,7 +51,7 @@ function applyFilters() {
     return afterStart && beforeEnd && statusMatch && activityMatch && keywordMatch;
   });
 
-  console.log(`✅ Filters applied. Showing ${filtered.length} of ${allCECData.length} records.`);
+  filteredCECData = filtered;
   renderCECData(filtered);
 }
 
@@ -62,6 +62,7 @@ function clearFilters() {
   document.getElementById("activitySelect").value = "";
   document.getElementById("keywordInput").value = "";
 
+  filteredCECData = allCECData;
   renderCECData(allCECData);
 }
 

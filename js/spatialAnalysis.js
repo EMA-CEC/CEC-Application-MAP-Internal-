@@ -86,18 +86,19 @@ function performSpatialAnalysis() {
 function analyzeNearbyCECs(buffer) {
   const container = document.getElementById("cecResultsBody");
   const warning = document.getElementById("cecWarning");
-
+  const dataset = (window.filteredCECData && window.filteredCECData.length) ? filteredCECData : allCECData;
+  
   container.innerHTML = "";
   warning.style.display = "none";
 
-  if (!allCECData || allCECData.length === 0) {
+  if (!dataset || dataset.length === 0) {
     warning.style.display = "block";
     return;
   }
 
   let count = 0;
 
-  allCECData.forEach(item => {
+  dataset.forEach(item => {
     const easting = parseFloat(item["Easting"]);
     const northing = parseFloat(item["Northing"]);
     if (isNaN(easting) || isNaN(northing)) return;
@@ -112,6 +113,7 @@ function analyzeNearbyCECs(buffer) {
         <td>${item["CEC Reference"] || "N/A"}</td>
         <td>${item["Year"] || "N/A"}</td>
         <td>${item["Application Determination"] || "Pending"}</td>
+		<td>${item["Activity Description"] || "N/A"}</td>
       `;
       container.appendChild(row);
     }
