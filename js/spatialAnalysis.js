@@ -87,7 +87,7 @@ function analyzeNearbyCECs(buffer) {
   const container = document.getElementById("cecResultsBody");
   const warning = document.getElementById("cecWarning");
   const dataset = (window.filteredCECData && window.filteredCECData.length) ? filteredCECData : allCECData;
-  
+
   container.innerHTML = "";
   warning.style.display = "none";
 
