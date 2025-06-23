@@ -62,7 +62,7 @@ function clearFilters() {
   document.getElementById("activitySelect").value = "";
   document.getElementById("keywordInput").value = "";
 
-  filteredCECData = allCECData;
+  filteredCECData = filtered;
   renderCECData(allCECData);
 }
 
