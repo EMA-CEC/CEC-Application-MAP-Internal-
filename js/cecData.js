@@ -2,7 +2,8 @@
 
 let markers, heatLayer, currentView = "cluster";
 window.allCECData = []; // Store original dataset and expose globally
-window.filteredCECData = []; // Used with the Surrounding CEC list in Spatial Analysis to filter results
+window.filteredCECData = []; // filtered results for Spatial analysis CEC list
+
 
 // Load and display CEC Applications
 function loadCECData() {
